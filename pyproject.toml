@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "temperatura-converter"
+version = "0.1.0"
+description = "Calculadora web para conversão de unidades de temperatura usando Gradio"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+keywords = ["temperatura", "conversão", "gradio", "celsius", "fahrenheit", "kelvin"]
+authors = [
+    {name = "Marcus", email = "marcus@example.com"},
+]
+dependencies = [
+    "gradio==6.8",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=23.0",
+    "ruff>=0.1",
+]
+
+[project.scripts]
+temperatura = "temperatura_converter.app:main"
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+select = [
+    "E",
+    "F",
+    "W",
+    "I",
+]
+
+[tool.ruff.isort]
+known-first-party = ["temperatura_converter"]
