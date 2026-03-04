@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  temperatura-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: temperatura-converter-prod
+    ports:
+      - "7860:7860"
+    restart: unless-stopped
+    environment:
+      - GRADIO_SERVER_NAME=0.0.0.0
+      - GRADIO_SERVER_PORT=7860
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:7860')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - temperatura-network
+
+networks:
+  temperatura-network:
+    driver: bridge

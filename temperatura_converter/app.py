@@ -4,52 +4,40 @@ import gradio as gr
 
 from .utils.converter import (
     celsius_to_fahrenheit,
-    celsius_to_kelvin,
     fahrenheit_to_celsius,
-    fahrenheit_to_kelvin,
-    kelvin_to_celsius,
-    kelvin_to_fahrenheit,
 )
 
 
 def convert_temperature(
     unit: str, value: float
-) -> tuple[str, str, str]:
+) -> tuple[str, str]:
     """
     Converte temperatura baseada na unidade de entrada selecionada.
 
     Args:
-        unit: Unidade de entrada ('celsius', 'fahrenheit', 'kelvin')
+        unit: Unidade de entrada ('celsius', 'fahrenheit')
         value: Valor da temperatura a converter
 
     Returns:
-        Tupla com (celsius, fahrenheit, kelvin) como strings formatadas
+        Tupla com (celsius, fahrenheit) como strings formatadas
     """
     if value is None:
-        return "Erro", "Erro", "Erro"
+        return "Erro", "Erro"
 
     try:
         if unit == "celsius":
             celsius = value
             fahrenheit = celsius_to_fahrenheit(celsius)
-            kelvin = celsius_to_kelvin(celsius)
         elif unit == "fahrenheit":
             fahrenheit = value
             celsius = fahrenheit_to_celsius(fahrenheit)
-            kelvin = fahrenheit_to_kelvin(fahrenheit)
-        elif unit == "kelvin":
-            if value < 0:
-                return "Inválido", "Inválido", "Inválido"
-            kelvin = value
-            celsius = kelvin_to_celsius(kelvin)
-            fahrenheit = kelvin_to_fahrenheit(kelvin)
         else:
-            return "Erro", "Erro", "Erro"
+            return "Erro", "Erro"
 
-        return f"{celsius:.2f}", f"{fahrenheit:.2f}", f"{kelvin:.2f}"
+        return f"{celsius:.2f}", f"{fahrenheit:.2f}"
     except ValueError as e:
         error_msg = f"Erro: {str(e)}"
-        return error_msg, error_msg, error_msg
+        return error_msg, error_msg
 
 
 def create_app() -> gr.Blocks:
@@ -67,7 +55,7 @@ def create_app() -> gr.Blocks:
                 gr.Markdown("## Valor a Converter")
 
                 unit_selector = gr.Radio(
-                    choices=["Celsius (°C)", "Fahrenheit (°F)", "Kelvin (K)"],
+                    choices=["Celsius (°C)", "Fahrenheit (°F)"],
                     value="Celsius (°C)",
                     label="Selecione a unidade de entrada",
                     info="Qual é a unidade do valor que você vai digitar?",
@@ -95,12 +83,6 @@ def create_app() -> gr.Blocks:
                     interactive=False,
                 )
 
-                kelvin_result = gr.Textbox(
-                    value="273.15",
-                    label="Kelvin (K)",
-                    interactive=False,
-                )
-
         # Botão de ação para converter
         convert_button = gr.Button(
             "🔄 Converter",
@@ -113,14 +95,13 @@ def create_app() -> gr.Blocks:
         convert_button.click(
             fn=convert_temperature,
             inputs=[unit_selector, temperature_input],
-            outputs=[celsius_result, fahrenheit_result, kelvin_result],
+            outputs=[celsius_result, fahrenheit_result],
         )
 
         gr.Markdown(
             "---\n"
             "**Fórmulas utilizadas:**\n"
             "- °F = (°C × 9/5) + 32\n"
-            "- K = °C + 273.15\n"
             "- °C = (°F - 32) × 5/9\n"
         )
 
